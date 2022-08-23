@@ -1,4 +1,4 @@
-import { GetServerSideProps, GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 
 const TestPage = ({ number }: { number: number }) => {
   return <span>{number}</span>;
@@ -6,7 +6,7 @@ const TestPage = ({ number }: { number: number }) => {
 
 export default TestPage;
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   const number = Math.random() * 1000;
   // const json = await fetch("http://localhost:3000/api/hello").then((res) =>
   //   res.json()

@@ -1,7 +1,9 @@
 ---
 author: Whoever
+title: How NextJS works
 created: 08/22/2022
 excerpt: Before you learn more advanced Next.js features, it would be helpful to understand the basics of how Next.js works.
+image: https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80
 ---
 
 Before you learn more advanced Next.js features, it would be helpful to understand the basics of how Next.js works.

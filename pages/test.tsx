@@ -1,21 +1,15 @@
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Head from "next/head";
 import { FormEvent, useEffect, useState } from "react";
 import { Task } from "../types/tasks";
 
 const TestPage = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const queryClient = useQueryClient();
   const [input, setInput] = useState("");
   const [isSubmitting, setSubmitting] = useState(false);
-
-  async function getTasks() {
-    fetch("http://localhost:3000/api/tasks")
-      .then((res) => res.json())
-      .then((res) => setTasks(res));
-  }
-
-  useEffect(() => {
-    getTasks();
-  }, []);
+  const { data: tasks, isLoading } = useQuery<Task[]>(["tasks"], () =>
+    fetch("http://localhost:3000/api/tasks").then((res) => res.json())
+  );
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -31,14 +25,18 @@ const TestPage = () => {
       .then((res) => {
         setInput("");
         setSubmitting(false);
-        getTasks();
+        queryClient.invalidateQueries(["allTasks"]);
       });
   }
 
   function deleteTask(id: string) {
     fetch(`http://localhost:3000/api/tasks/${id}`, { method: "DELETE" }).then(
-      (res) => getTasks()
+      (res) => queryClient.invalidateQueries(["allTasks"])
     );
+  }
+
+  if (isLoading) {
+    return <p>Loading...</p>;
   }
 
   return (
@@ -48,17 +46,21 @@ const TestPage = () => {
       </Head>
       <div className="space-y-6">
         <ul className="space-y-4">
-          {tasks.map((task) => (
-            <li key={task.id} className="flex items-center justify-between">
-              <span>{task.title}</span>
-              <button
-                onClick={() => deleteTask(task.id)}
-                className="h-6 w-6 bg-red-600 text-white"
-              >
-                x
-              </button>
-            </li>
-          ))}
+          {!tasks ? (
+            <p>Something went wrong</p>
+          ) : (
+            tasks.map((task) => (
+              <li key={task.id} className="flex items-center justify-between">
+                <span>{task.title}</span>
+                <button
+                  onClick={() => deleteTask(task.id)}
+                  className="h-6 w-6 bg-red-600 text-white"
+                >
+                  x
+                </button>
+              </li>
+            ))
+          )}
         </ul>
         <form onSubmit={onSubmit} className="flex space-x-2">
           <input

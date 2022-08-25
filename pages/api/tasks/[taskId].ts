@@ -14,7 +14,7 @@ export default async function handler(
     if (req.method === "GET") {
       const task = tasks.find((task) => task.id === taskId);
       if (!task) {
-        res.status(404).send({ message: `No task with ID ${taskId} found` });
+        return res.status(404).end();
       }
       const comments = db.comments;
       const commentsFromTask = comments.filter(

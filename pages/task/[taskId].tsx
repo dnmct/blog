@@ -1,26 +1,35 @@
+import { useQuery } from "@tanstack/react-query";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Task } from "../../types/tasks";
 
 const Task: NextPage = () => {
   const router = useRouter();
   const taskId = router.query.taskId as string;
-  const [task, setTask] = useState<Task | { message: string } | null>(null);
+  const {
+    isError,
+    isLoading,
+    data: task,
+  } = useQuery(
+    ["tasks", taskId],
+    () =>
+      fetch(`http://localhost:3000/api/tasks/${taskId}`).then((res) =>
+        res.json()
+      ),
+    { enabled: !!taskId }
+  );
 
-  useEffect(() => {
-    fetch(`http://localhost:3000/api/tasks/${taskId}`)
-      .then((res) => res.json())
-      .then((res) => setTask(res));
-  }, [taskId]);
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError) {
+    return <p>Something went wrong</p>;
+  }
 
   return (
     <div>
-      {task?.message ? (
-        <p>Task not found</p>
-      ) : (
-        <pre>{JSON.stringify(task, null, 2)}</pre>
-      )}
+      <pre>{JSON.stringify(task, null, 2)}</pre>
     </div>
   );
 };

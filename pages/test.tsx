@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { FormEvent, useEffect, useState } from "react";
 import { Task } from "../types/tasks";
 
@@ -41,37 +42,42 @@ const TestPage = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <ul className="space-y-4">
-        {tasks.map((task) => (
-          <li key={task.id} className="flex items-center justify-between">
-            <span>{task.title}</span>
-            <button
-              onClick={() => deleteTask(task.id)}
-              className="h-6 w-6 bg-red-600 text-white"
-            >
-              x
-            </button>
-          </li>
-        ))}
-      </ul>
-      <form onSubmit={onSubmit} className="flex space-x-2">
-        <input
-          value={input}
-          onChange={(event) => setInput(event.target.value)}
-          className="py-2 px-3"
-          type="text"
-          placeholder="Task"
-        />
-        <button
-          disabled={isSubmitting}
-          className="bg-slate-700 p-2 text-white"
-          type="submit"
-        >
-          {isSubmitting ? "Submitting..." : "Create Task"}
-        </button>
-      </form>
-    </div>
+    <>
+      <Head>
+        <title>Creating Blog posts</title>
+      </Head>
+      <div className="space-y-6">
+        <ul className="space-y-4">
+          {tasks.map((task) => (
+            <li key={task.id} className="flex items-center justify-between">
+              <span>{task.title}</span>
+              <button
+                onClick={() => deleteTask(task.id)}
+                className="h-6 w-6 bg-red-600 text-white"
+              >
+                x
+              </button>
+            </li>
+          ))}
+        </ul>
+        <form onSubmit={onSubmit} className="flex space-x-2">
+          <input
+            value={input}
+            onChange={(event) => setInput(event.target.value)}
+            className="py-2 px-3"
+            type="text"
+            placeholder="Task"
+          />
+          <button
+            disabled={isSubmitting}
+            className="bg-slate-700 p-2 text-white"
+            type="submit"
+          >
+            {isSubmitting ? "Submitting..." : "Create Task"}
+          </button>
+        </form>
+      </div>
+    </>
   );
 };
 

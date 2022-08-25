@@ -1,6 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import fs from "fs/promises";
 import { Task } from "../../../types/tasks";
 import { nanoid } from "nanoid";
 import { getDB, updateTasks } from "../../../utils/db";
@@ -25,6 +24,6 @@ export default async function handler(
     };
     const newTasks = [...tasks, newTask];
     await updateTasks(db, newTasks);
-    res.status(200).json({ id: newTask.id });
+    res.status(201).json({ id: newTask.id });
   }
 }

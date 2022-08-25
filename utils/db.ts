@@ -1,14 +1,19 @@
 import fs from "fs/promises";
 import { Task } from "../types/tasks";
+type Comment = {
+  id: string;
+  message: string;
+  taskId: string;
+};
 
 interface DB {
   tasks: Task[];
+  comments: Comment[];
 }
 
 export async function getDB(): Promise<DB> {
   const dbString = await fs.readFile("db.json", { encoding: "utf-8" });
-  const db = await JSON.parse(dbString);
-  return db;
+  return JSON.parse(dbString);
 }
 
 export async function updateTasks(db: DB, updatedTasks: Task[]) {

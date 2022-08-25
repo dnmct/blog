@@ -4,15 +4,35 @@ import { getDB, updateTasks } from "../../../utils/db";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ id: string }>
+  res: NextApiResponse
 ) {
-  const db = await getDB();
-  const tasks = db.tasks;
-
-  if (req.method === "DELETE") {
+  try {
+    const db = await getDB();
+    const tasks = db.tasks;
     const taskId = req.query.taskId as string;
-    const newTasks = tasks.filter((task) => task.id !== taskId);
-    await updateTasks(db, newTasks);
-    res.status(200).json({ id: taskId });
+
+    if (req.method === "GET") {
+      const task = tasks.find((task) => task.id === taskId);
+      if (!task) {
+        res.status(404).send({ message: `No task with ID ${taskId} found` });
+      }
+      const comments = db.comments;
+      const commentsFromTask = comments.filter(
+        (comment) => comment.taskId === taskId
+      );
+      const taskWithComments = {
+        ...task,
+        comments: commentsFromTask,
+      };
+      res.status(200).json(taskWithComments);
+    }
+
+    if (req.method === "DELETE") {
+      const newTasks = tasks.filter((task) => task.id !== taskId);
+      await updateTasks(db, newTasks);
+      res.status(200).json({ id: taskId });
+    }
+  } catch (e) {
+    res.status(500).send({ message: "Ups something went wrong", error: e });
   }
 }

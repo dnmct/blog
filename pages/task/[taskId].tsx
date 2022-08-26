@@ -1,23 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useTask } from "../../hooks/tasks";
 
 const Task: NextPage = () => {
   const router = useRouter();
   const taskId = router.query.taskId as string;
-  const {
-    isError,
-    isLoading,
-    data: task,
-  } = useQuery(
-    ["tasks", taskId],
-    () =>
-      fetch(`http://localhost:3000/api/tasks/${taskId}`).then((res) =>
-        res.json()
-      ),
-    { enabled: !!taskId }
-  );
+  const { isError, isLoading, data: task } = useTask(taskId);
 
   if (isLoading) {
     return <p>Loading...</p>;
